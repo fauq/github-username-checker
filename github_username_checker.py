@@ -8,17 +8,9 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 
-# ═══════════════════════════════════════════════════════════════════════════
-# CONFIGURATION
-# ═══════════════════════════════════════════════════════════════════════════
-
 THREADS = 3  # Number of concurrent checking threads (Keep low to avoid bans)
 CHECK_DELAY = 1.5  # Base delay between requests
 RESULTS_FILE = "available_usernames.txt"
-
-# ═══════════════════════════════════════════════════════════════════════════
-# CONSOLE COLORS
-# ═══════════════════════════════════════════════════════════════════════════
 
 class Color:
     RESET = "\033[0m"
@@ -43,10 +35,6 @@ class Color:
     BRIGHT_CYAN = "\033[96m"
     BRIGHT_WHITE = "\033[97m"
 
-# ═══════════════════════════════════════════════════════════════════════════
-# BANNER
-# ═══════════════════════════════════════════════════════════════════════════
-
 BANNER = f"""
 {Color.BRIGHT_CYAN}╔════════════════════════════════════════════════════════════════════╗
 ║  {Color.BRIGHT_WHITE}  ██████╗ ██╗████████╗██╗   ██╗██╗   ██╗██████╗                   {Color.BRIGHT_CYAN}║
@@ -59,10 +47,6 @@ BANNER = f"""
 ║  {Color.DIM}                  made with <3 by romergan                        {Color.BRIGHT_CYAN}║
 ╚════════════════════════════════════════════════════════════════════╝{Color.RESET}
 """
-
-# ═══════════════════════════════════════════════════════════════════════════
-# STATISTICS TRACKER
-# ═══════════════════════════════════════════════════════════════════════════
 
 class Stats:
     def __init__(self):
@@ -100,10 +84,6 @@ class Stats:
 
 stats = Stats()
 
-# ═══════════════════════════════════════════════════════════════════════════
-# GITHUB RESERVED USERNAMES (Common ones)
-# ═══════════════════════════════════════════════════════════════════════════
-
 RESERVED_KEYWORDS = {
     'about', 'abuse', 'account', 'admin', 'api', 'apps', 'archive',
     'blog', 'business', 'collections', 'contact', 'dashboard', 'desktop',
@@ -115,10 +95,6 @@ RESERVED_KEYWORDS = {
     'settings', 'shop', 'site', 'sponsors', 'status', 'support',
     'team', 'teams', 'topics', 'tos', 'trending', 'www', 'abuse', 'security'
 }
-
-# ═══════════════════════════════════════════════════════════════════════════
-# USERNAME VALIDATION
-# ═══════════════════════════════════════════════════════════════════════════
 
 def is_valid_github_username(username):
     if not username or len(username) < 1 or len(username) > 39:
@@ -137,10 +113,6 @@ def is_valid_github_username(username):
         return False
     
     return True
-
-# ═══════════════════════════════════════════════════════════════════════════
-# USERNAME AVAILABILITY CHECKER
-# ═══════════════════════════════════════════════════════════════════════════
 
 def check_username_via_profile(username):
     try:
@@ -167,10 +139,6 @@ def check_username_via_profile(username):
     
     except requests.RequestException:
         return 'error'
-
-# ═══════════════════════════════════════════════════════════════════════════
-# USERNAME GENERATION LOGIC
-# ═══════════════════════════════════════════════════════════════════════════
 
 def generate_username(length, include_numbers=False):
     if include_numbers:
@@ -229,10 +197,6 @@ def generate_usernames_batch(count, length_min=None, length_max=None, include_nu
     
     return result
 
-# ═══════════════════════════════════════════════════════════════════════════
-# CHECKER WORKER
-# ═══════════════════════════════════════════════════════════════════════════
-
 def check_username_worker(username):
     delay = CHECK_DELAY + random.uniform(-0.3, 0.5)
     time.sleep(max(0.5, delay))
@@ -272,10 +236,6 @@ def check_username_worker(username):
         sys.stdout.flush()
         return ('error', username)
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SAVE RESULTS
-# ═══════════════════════════════════════════════════════════════════════════
-
 def save_username(username):
     try:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -283,10 +243,6 @@ def save_username(username):
             f.write(f"{username} | Found: {timestamp}\n")
     except Exception as e:
         print(f"{Color.RED}[!] Error saving username: {e}{Color.RESET}")
-
-# ═══════════════════════════════════════════════════════════════════════════
-# MAIN CONTROL
-# ═══════════════════════════════════════════════════════════════════════════
 
 def run_checker(usernames):
     global stats
@@ -440,4 +396,5 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+
         sys.exit(0)
